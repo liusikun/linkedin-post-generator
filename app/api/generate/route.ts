@@ -2,9 +2,26 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: 'English',
+  zh: 'Chinese',
+  es: 'Spanish',
+  fr: 'French',
+  de: 'German',
+  ja: 'Japanese',
+};
+
+const STYLE_NAMES: Record<string, string> = {
+  practical: 'Practical Tips',
+  inspirational: 'Inspirational',
+  storytelling: 'Storytelling',
+  controversial: 'Controversial',
+  humorous: 'Humorous',
+};
+
 export async function POST(req: NextRequest) {
   try {
-    const { topic, style } = await req.json();
+    const { topic, style, language = 'en' } = await req.json();
 
     if (!topic || !style) {
       return NextResponse.json(
@@ -13,42 +30,51 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const prompt = `你是一个LinkedIn内容专家。用户想要发布一条关于"${topic}"的帖子，风格是"${style}"。
+    const languageName = LANGUAGE_NAMES[language] || 'English';
+    const styleName = STYLE_NAMES[style] || style;
 
-请生成3个版本的LinkedIn帖子，每个版本都要：
-1. 开头吸引人（钩子、痛点、故事、争议观点）
-2. 结构清晰（短句、换行、数字、列表）
-3. 适量使用emoji（不超过8个）
-4. 结尾引导互动（提问、邀请评论）
-5. 长度150-300字
+    const prompt = `You are a LinkedIn content expert. The user wants to create a post about "${topic}" in ${styleName} style.
 
-版本1：钩子开头 + 列表式（最稳妥）
-版本2：故事型（更有温度）
-版本3：争议型（高互动但有风险）
+Please generate 3 versions of LinkedIn posts in ${languageName}, each version should:
+1. Have an attention-grabbing opening (hook, pain point, story, or controversial statement)
+2. Clear structure (short sentences, line breaks, numbers, lists)
+3. Use emojis appropriately (no more than 8)
+4. End with a call-to-action (question, invite comments)
+5. Length: 150-300 words
 
-请以JSON格式返回，格式如下：
+Version 1: Hook + List format (most reliable)
+Version 2: Storytelling format (more engaging)
+Version 3: Controversial format (high engagement but risky)
+
+Return in JSON format:
 {
   "versions": [
     {
-      "type": "钩子+列表",
-      "content": "帖子内容...",
+      "type": "Hook + List",
+      "content": "post content...",
       "interactionScore": 8.5,
-      "suggestions": ["建议1", "建议2"]
+      "suggestions": ["tip 1", "tip 2"]
     },
     {
-      "type": "故事型",
-      "content": "帖子内容...",
+      "type": "Storytelling",
+      "content": "post content...",
       "interactionScore": 9.2,
-      "suggestions": ["建议1", "建议2"]
+      "suggestions": ["tip 1", "tip 2"]
     },
     {
-      "type": "争议型",
-      "content": "帖子内容...",
+      "type": "Controversial",
+      "content": "post content...",
       "interactionScore": 9.8,
-      "suggestions": ["建议1", "建议2"]
+      "suggestions": ["tip 1", "tip 2"]
     }
   ]
-}`;
+}
+
+IMPORTANT: 
+- Generate the entire post content in ${languageName}
+- Keep the "type" field in English
+- Keep the "suggestions" in English
+- Make sure the content is culturally appropriate for ${languageName} speakers`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -61,7 +87,7 @@ export async function POST(req: NextRequest) {
         messages: [
           {
             role: 'system',
-            content: '你是一个LinkedIn内容专家，擅长创作高互动率的帖子。'
+            content: `You are a LinkedIn content expert who can write engaging posts in multiple languages. Always respond in valid JSON format.`
           },
           {
             role: 'user',
@@ -75,14 +101,19 @@ export async function POST(req: NextRequest) {
     });
 
     const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.error?.message || 'OpenAI API error');
+    }
+
     const result = JSON.parse(data.choices[0].message.content);
 
     return NextResponse.json({ versions: result.versions });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Generate error:', error);
     return NextResponse.json(
-      { error: 'Generation failed' },
+      { error: error.message || 'Generation failed' },
       { status: 500 }
     );
   }

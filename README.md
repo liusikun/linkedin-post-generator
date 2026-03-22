@@ -1,16 +1,17 @@
-# AI LinkedIn帖子生成器
+# AI LinkedIn Post Generator
 
-30秒生成高质量LinkedIn帖子，不再为写什么而头疼。
+Generate high-quality LinkedIn posts in 30 seconds. No more writer's block.
 
-## 功能特点
+## Features
 
-- 🚀 3秒生成3个版本的LinkedIn帖子
-- 🎯 5种风格选择（干货型、励志型、故事型、争议型、幽默型）
-- ⭐ 预测互动率评分
-- 📋 一键复制到剪贴板
-- 🆓 免费使用（5次/天）
+- 🚀 Generate 3 versions of LinkedIn posts in 3 seconds
+- 🌍 Multi-language support (English, Chinese, Spanish, French, German, Japanese)
+- 🎯 5 style options (Practical Tips, Inspirational, Storytelling, Controversial, Humorous)
+- ⭐ Engagement score prediction
+- 📋 One-click copy to clipboard
+- 🆓 Free to use (5 posts/day)
 
-## 技术栈
+## Tech Stack
 
 - Next.js 14
 - TypeScript
@@ -18,34 +19,43 @@
 - OpenAI GPT-4 Turbo
 - Cloudflare Pages
 
-## 本地开发
+## Local Development
 
 ```bash
-# 安装依赖
+# Install dependencies
 npm install
 
-# 配置环境变量
+# Configure environment variables
 cp .env.example .env.local
-# 编辑 .env.local，填入 OPENAI_API_KEY
+# Edit .env.local and add your OPENAI_API_KEY
 
-# 启动开发服务器
+# Start development server
 npm run dev
 
-# 打开浏览器
+# Open browser
 # http://localhost:3000
 ```
 
-## 部署
+## Deployment
 
 ### Cloudflare Pages
 
-1. Fork本仓库
-2. 在Cloudflare Dashboard连接GitHub
-3. 配置构建设置：
+1. Fork this repository
+2. Connect GitHub in Cloudflare Dashboard
+3. Configure build settings:
    - Build command: `npm run build`
    - Build output directory: `out`
    - Environment variables: `OPENAI_API_KEY`
-4. 部署
+4. Deploy
+
+## Supported Languages
+
+- 🇺🇸 English
+- 🇨🇳 Chinese (中文)
+- 🇪🇸 Spanish (Español)
+- 🇫🇷 French (Français)
+- 🇩🇪 German (Deutsch)
+- 🇯🇵 Japanese (日本語)
 
 ## License
 

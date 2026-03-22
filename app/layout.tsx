@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AI LinkedIn帖子生成器",
-  description: "30秒生成高质量LinkedIn帖子，不再为写什么而头疼",
+  title: "AI LinkedIn Post Generator",
+  description: "Generate high-quality LinkedIn posts in 30 seconds",
 };
 
 export default function RootLayout({
@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN">
+    <html lang="en">
       <body className={inter.className}>{children}</body>
     </html>
   );
