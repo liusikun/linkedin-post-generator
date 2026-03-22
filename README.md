@@ -16,7 +16,7 @@ Generate high-quality LinkedIn posts in 30 seconds. No more writer's block.
 - Next.js 14
 - TypeScript
 - Tailwind CSS
-- OpenAI GPT-4 Turbo
+- OpenAI GPT-4 Turbo → **Google Gemini 1.5 Flash (Free!)**
 - Cloudflare Pages
 
 ## Local Development
@@ -27,7 +27,7 @@ npm install
 
 # Configure environment variables
 cp .env.example .env.local
-# Edit .env.local and add your OPENAI_API_KEY
+# Edit .env.local and add your GEMINI_API_KEY (free at https://ai.google.dev/)
 
 # Start development server
 npm run dev
@@ -45,7 +45,7 @@ npm run dev
 3. Configure build settings:
    - Build command: `npm run build`
    - Build output directory: `out`
-   - Environment variables: `OPENAI_API_KEY`
+   - Environment variables: `GEMINI_API_KEY` (free at https://ai.google.dev/)
 4. Deploy
 
 ## Supported Languages

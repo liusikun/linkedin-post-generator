@@ -109,7 +109,7 @@ export default function Home() {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full text-sm font-medium mb-6 shadow-lg">
             <Sparkles className="w-4 h-4" />
-            <span>Powered by GPT-4</span>
+            <span>Powered by Google Gemini — 100% Free</span>
           </div>
           
           <h1 className="text-6xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
@@ -359,7 +359,7 @@ export default function Home() {
           <div className="inline-flex items-center gap-6 text-sm text-gray-500">
             <span className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-indigo-500" />
-              Powered by OpenAI GPT-4
+              Powered by Google Gemini
             </span>
             <span>•</span>
             <span className="flex items-center gap-2">

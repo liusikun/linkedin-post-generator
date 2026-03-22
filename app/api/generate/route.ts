@@ -74,39 +74,66 @@ IMPORTANT:
 - Generate the entire post content in ${languageName}
 - Keep the "type" field in English
 - Keep the "suggestions" in English
-- Make sure the content is culturally appropriate for ${languageName} speakers`;
+- Make sure the content is culturally appropriate for ${languageName} speakers
+- Return ONLY valid JSON, no markdown formatting`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-4-turbo-preview',
-        messages: [
-          {
-            role: 'system',
-            content: `You are a LinkedIn content expert who can write engaging posts in multiple languages. Always respond in valid JSON format.`
-          },
-          {
-            role: 'user',
-            content: prompt
+    // Use Google Gemini API
+    const apiKey = process.env.GEMINI_API_KEY;
+    
+    if (!apiKey) {
+      throw new Error('GEMINI_API_KEY is not configured');
+    }
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: prompt
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.8,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 2048,
           }
-        ],
-        temperature: 0.8,
-        max_tokens: 2000,
-        response_format: { type: 'json_object' }
-      }),
-    });
+        }),
+      }
+    );
 
     const data = await response.json();
     
     if (!response.ok) {
-      throw new Error(data.error?.message || 'OpenAI API error');
+      console.error('Gemini API error:', data);
+      throw new Error(data.error?.message || 'Gemini API error');
     }
 
-    const result = JSON.parse(data.choices[0].message.content);
+    // Extract text from Gemini response
+    const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    
+    if (!generatedText) {
+      throw new Error('No content generated');
+    }
+
+    // Parse JSON from response (remove markdown code blocks if present)
+    let jsonText = generatedText.trim();
+    if (jsonText.startsWith('```json')) {
+      jsonText = jsonText.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+    } else if (jsonText.startsWith('```')) {
+      jsonText = jsonText.replace(/```\n?/g, '');
+    }
+
+    const result = JSON.parse(jsonText);
 
     return NextResponse.json({ versions: result.versions });
 
